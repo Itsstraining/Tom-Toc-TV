@@ -45,12 +45,12 @@ class Database {
     } catch (err) {}
   }
 
-  async getUserInfo(body) {
+  async getUserInfo(id) {
     let temp;
     try {
       await firestore
         .collection("UserInfo")
-        .where("UserId", "==", body.userId)
+        .where("UserId", "==", id)
         .get()
         .then((res) => {
           res.forEach((element) => {
@@ -147,12 +147,17 @@ class Database {
 
   async addChat(data) {
     try {
+      let length=await firestore.collection("Streams").doc(data.streamId).get().then( (data)=>{
+        return  data.data().Messages.length;
+      })
       await firestore
         .collection("Streams")
         .doc(data.streamId)
         .update({
           Messages: admin.firestore.FieldValue.arrayUnion({
             UserId: data.UserId,
+            UserName:data.UserName,
+            messNum:length,
             mess: data.message,
           }),
         });

@@ -56,10 +56,10 @@
                     <dl class="example-dl">
                         <ng-container *cdkVirtualFor="let chat of this.stream.streamInfo.Messages">
                             <div style="height: fit-content;">
-                                <dt class="example-dt" *ngIf="this.stream.streamInfo.HostId==this.auth.user.uid && chat.UserId==this.auth.user.uid" style="color:red">You</dt>
-                                <dt class="example-dt" *ngIf="chat.UserId==this.stream.streamInfo.HostId && chat.UserId!==this.auth.user.uid" style="color:red">{{this.chat.UserId}}</dt>
-                                <dt class="example-dt" *ngIf="this.stream.streamInfo.HostId!=this.auth.user.uid && chat.UserId==this.auth.user.uid" style="color:blue">You</dt>
-                                <dt class="example-dt" *ngIf="this.stream.streamInfo.HostId!=this.auth.user.uid && chat.UserId!=this.auth.user.uid && chat.UserId !=this.stream.streamInfo.HostId" style="color:blue">{{chat.UserId}}</dt>
+                                <dt class="example-dt" *ngIf="this.stream.streamInfo.HostId==chat.UserId && chat.UserId==this.auth.user.uid" style="color:red">You</dt>
+                                <dt class="example-dt" *ngIf="chat.UserId==this.stream.streamInfo.HostId && chat.UserId!==this.auth.user.uid" style="color:red">{{chat.UserName}}</dt>
+                                <dt class="example-dt" *ngIf="this.stream.streamInfo.HostId!=chat.UserId && chat.UserId==this.auth.user.uid" style="color:blue">You</dt>
+                                <dt class="example-dt" *ngIf="this.stream.streamInfo.HostId!=chat.UserId && chat.UserId!=this.auth.user.uid " style="color:blue">{{chat.UserName}}</dt>
                                 <dd class="example-dd">{{chat.mess}}</dd>
                             </div>
 
@@ -71,7 +71,7 @@
                 <div id="av">
                     <mat-icon>perm_identity</mat-icon>
                 </div>
-            
+
                     <div id="bl">
                         <!-- <div *ngFor="let thing of things.controls; let i=index">
                         <label [for]="'input' + i">Thing {{i}}:</label>
@@ -84,7 +84,7 @@
                     <button id="icon">
                         <mat-icon class="sendIcon" (click)="this.addChatMessage()">send</mat-icon>
                     </button>
-               
+
             </div>
         </div>
     </div>
@@ -93,7 +93,7 @@
         <button id="donate">20.000</button>
         <button id="donate">50.000</button>
         <button id="donate">100.000</button>
-        <button id="donate">200.000</button>    
+        <button id="donate">200.000</button>
         <button id="donate">500.000</button>
         <button id="donate">1.000.000</button>
         <button id="donate">2.000.000</button>

@@ -9,6 +9,26 @@ const db = new Database();
 app.use(body.json());
 app.use(cors());
 
+app.get("/category", async function(request, response){
+  try {
+    let result = await db.getCategory();
+    response.send(result);
+  } catch (error) {
+    response.send(error.toString());
+  }
+});
+// api lấy  thông tin cá nhân của người dùng
+app.get('/api/:id', async function (request, response) {
+  let docId = request.params.docId;
+  try{
+      let result = await db.getItemid();
+      response.send(result);
+  }catch (error) {
+      response.send({
+        error: error.toString(),
+      });
+  }
+});
 //API chỉnh sửa thông tin người dùng theo UserID
 app.post("/editUserInfo", async function (req, res) {
   try {
@@ -22,10 +42,10 @@ app.post("/editUserInfo", async function (req, res) {
 
 // Lấy dữ liệu người dùng vào TrangProfile thông qua firebase authentication
 // và API get UserInfo
-app.get("/getUserInfo", async function (req, res) {
+app.get("/getUserInfo/:id", async function (req, res) {
   try {
-    let body = req.body;
-    let result=await db.getUserInfo(body);
+    let id = req.params.id;
+    let result=await db.getUserInfo(id);
     res.send(result);
   } catch (error) {
     res.send(error.toString());
