@@ -6,7 +6,7 @@ admin.initializeApp({
 
 const firestore = admin.firestore();
 class Database {
-  constructor() {}
+  constructor() { }
 
   async editUserInfo(body) {
     let temp;
@@ -42,7 +42,7 @@ class Database {
           Subcriber: [],
         });
       }
-    } catch (err) {}
+    } catch (err) { }
   }
 
   async getUserInfo(id) {
@@ -88,22 +88,22 @@ class Database {
   ////STREAM FUNCTION
 
   // api lấy  thông tin cá nhân của người dùng
-  async getItemid(){
+  async getItemid() {
     let temp;
     (await firestore.collection("UserInfo")
-    .get())
-    .docs.map((data)=>{
-      temp = data.data();
-    })
+      .get())
+      .docs.map((data) => {
+        temp = data.data();
+      })
     return temp;
   }
   //// category
-  async getCategory(){
-    let temp=[];
-    await firestore.collection("Categories").get().then((data)=>{
+  async getCategory() {
+    let temp = [];
+    await firestore.collection("Categories").get().then((data) => {
       temp.push(data);
     })
-    
+
     return temp;
   }
   /// Tạo stream
@@ -121,27 +121,28 @@ class Database {
   }
   //Xóa stream
   async endStream(bodydata) {
+
     try {
       let string;
       await firestore
         .collection("Streams")
-        .doc(bodydata.streamId)
+        .doc(bodydata.bodydata.streamId)
         .get()
         .then((data) => {
           string = data.data().HostId;
         });
-      await firestore.collection("Streams").doc(bodydata.streamId).delete();
+      await firestore.collection("Streams").doc(bodydata.bodydata.streamId).delete();
       await firestore
         .collection("Users")
         .doc(string)
         .update({ isStreaming: false });
-    } catch (err) {}
+    } catch (err) { }
   }
 
   async addChat(data) {
     try {
-      let length=await firestore.collection("Streams").doc(data.streamId).get().then( (data)=>{
-        return  data.data().Messages.length;
+      let length = await firestore.collection("Streams").doc(data.streamId).get().then((data) => {
+        return data.data().Messages.length;
       })
       await firestore
         .collection("Streams")
@@ -149,8 +150,8 @@ class Database {
         .update({
           Messages: admin.firestore.FieldValue.arrayUnion({
             UserId: data.UserId,
-            UserName:data.UserName,
-            messNum:length,
+            UserName: data.UserName,
+            messNum: length,
             mess: data.message,
           }),
         });
@@ -158,10 +159,82 @@ class Database {
       console.log(err);
     }
   }
+  async addViewer(IdStream, UserId) {
+    try {
+      await firestore.collection("Streams").doc(IdStream).update({
+        Viewer: admin.firestore.FieldValue.arrayUnion(UserId)
+      })
+    } catch (err) {
+
+    }
+
+  }
+  async removeViewer(IdStream, UserId) {
+    try {
+      await firestore.collection("Streams").doc(IdStream).update({
+        Viewer: admin.firestore.FieldValue.arrayRemove(UserId)
+      })
+
+    } catch (err) {
+
+    }
+
+  }
+
+  async Like(IdStream, userIdDisLike) {
+    try {
+      await firestore.collection("Streams").doc(IdStream).get().then(value => {
+
+        value.data().DisLikes.forEach(async data => {
+          if (data == userIdDisLike) {
+            await firestore.collection("Streams").doc(IdStream).update({
+              DisLikes: admin.firestore.FieldValue.arrayRemove(userIdDisLike)
+            })
+            await firestore.collection("Streams").doc(IdStream).update({
+              Likes: admin.firestore.FieldValue.arrayUnion(userIdDisLike)
+            })
+          }
+          else {
+            await firestore.collection("Streams").doc(IdStream).update({
+              Likes: admin.firestore.FieldValue.arrayUnion(userIdDisLike)
+            })
+          }
+        })
+
+      })
+    } catch (error) {
+      res.send(error.toString());
+    }
+
+  }
+  async disLike(IdStream, userIdDisLike) {
+    try {
+      await firestore.collection("Streams").doc(IdStream).get().then(value => {
+        value.data().Likes.forEach(async data => {
+          if (data == userIdDisLike) {
+            await firestore.collection("Streams").doc(IdStream).update({
+              Likes: admin.firestore.FieldValue.arrayRemove(userIdDisLike)
+            })
+            await firestore.collection("Streams").doc(IdStream).update({
+              DisLikes: admin.firestore.FieldValue.arrayUnion(userIdDisLike)
+            })
+          }
+        })
+
+      });
+      await firestore.collection("Streams").doc(IdStream).update({
+        DisLikes: admin.firestore.FieldValue.arrayUnion(userIdDisLike)
+      })
+    } catch (err) {
+
+    }
+
+  }
   ////END STREAM FUNCTION
 
   async createSubcribe(body) {
     try {
+
       await firestore
         .collection("UserInfo")
         .where("UserId", "==", body.userIdStream)

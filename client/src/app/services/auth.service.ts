@@ -7,7 +7,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   FacebookAuthProvider,
-  getAuth,
+
 
 
 } from '@angular/fire/auth';
@@ -24,18 +24,27 @@ import {
 })
 export class AuthService {
   public user: any;
+  public currentUser:any;
   constructor(
     public auth: Auth,
     public other:Auth,
     public http: HttpClient,
     public fs: Firestore
+
   ) {
     if (auth) {
       authState(this.auth).subscribe((temp: any) => {
         this.user = temp;
+
         this.createUser();
       });
     }
+  }
+  public checkAuth(): boolean {
+    if (!this.user) {
+      return false;
+    }
+    return true;
   }
   public async login() {
     return await signInWithPopup(this.auth, new GoogleAuthProvider());

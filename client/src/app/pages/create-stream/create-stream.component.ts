@@ -21,20 +21,18 @@ export interface Category{
 export class CreateStreamComponent implements OnInit {
   animalControl = new FormControl('', Validators.required);
   selectFormControl = new FormControl('', Validators.required);
-  categories: Category[] = [
-    {categoryId: 1, name: 'GAME'},
-    {categoryId: 2, name: 'TALKSHOW'},
-    {categoryId: 3, name: 'BÌNH LUẬN GIẢI ĐẤU'},
-  ];
+
   public createStreamForm: FormGroup;
   hide = true;
   constructor(public fb: FormBuilder, public stream: StreamService,public auth:AuthService) {
     this.createStreamForm = this.fb.group({
       Name: new FormControl('', [Validators.required]),
+      Category: new FormControl('', [Validators.required]),
       Description: new FormControl(''),
       StreamKey: new FormControl('', [Validators.required]),
     });
     this.createStreamForm.controls['Streamkey'];
+    this.stream.getCategory();
   }
 
   ngOnInit(): void {}
@@ -44,7 +42,7 @@ export class CreateStreamComponent implements OnInit {
   submitCreateStream() {
     let form = this.createStreamForm;
     if (form.valid) {
-      this.stream.createStream(form.controls['Name'].value,form.controls['Description'].value,form.controls['StreamKey'].value,this.auth.user.uid);
+      this.stream.createStream(form.controls['Name'].value,form.controls['Category'].value,form.controls['Description'].value,form.controls['StreamKey'].value,this.auth.user.uid);
     } else {
       alert(`Vui lòng nhập điền đủ thông tin`);
     }

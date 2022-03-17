@@ -15,25 +15,25 @@
                 <div id="title">
                     <div style="display: flex;">
                         <p style="margin-top:2%;width: 32%;">Monsieur Tuna</p>
-                        <p style="margin-top:2%;width:50%;">lượt xem:100.000.000</p>
+                        <p style="margin-top:2%;width:50%;">Đang xem :{{this.stream.streamInfo.Viewer.length}}</p>
 
                     </div>
                     <p style="margin-top: 5%;width:50%;">{{this.stream.streamInfo.Name}}</p>
                 </div>
                 <div class="SumLike">
                     <div id="Like">
-                        <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                        <i class="fa fa-thumbs-up" aria-hidden="true" (click)="this.stream.Like(this.stream.streamInfo.idDoc,this.auth.user.uid)"></i>
                         <p style="color: white;font-size: 20px;">{{this.stream.streamInfo.Likes.length}}</p>
                     </div>
                     <div id="DisLike">
-                        <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                        <i class="fa fa-thumbs-down" aria-hidden="true" (click)="this.stream.disLike(this.stream.streamInfo.idDoc,this.auth.user.uid)"></i>
                         <p style="color: white;font-size: 20px;">{{this.stream.streamInfo.DisLikes.length}}</p>
                     </div>
                 </div>
 
                 <div id="Sub">
                     <div id="Follow">
-                        <button id="subcribe">Theo dõi</button>
+                        <button id="subcribe" (click)="endStream()">Ngắt stream</button>
                         <i style="cursor: pointer;margin-left:9%;" class="fas fa-share"></i>
                     </div>
 

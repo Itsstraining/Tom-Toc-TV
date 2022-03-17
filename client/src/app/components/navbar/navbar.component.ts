@@ -12,11 +12,8 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
- 
-  constructor(public dialog : MatDialog,public auth:AuthService){
-   
 
-    
+  constructor(public dialog : MatDialog,public auth:AuthService){
     }
 
   ngOnInit(): void {

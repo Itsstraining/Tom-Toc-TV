@@ -10,22 +10,22 @@
 			<img src="./../../../assets/images/Logo.png" >
 		</a>
 	</div>
-	
+
 	<div class="navbar">
 
 	<div class="text" >
 		<a [routerLink]="['']">Trang Chủ</a>
-		<a [routerLink]="['/gamegenre']">Trực Tiếp</a>
-		<a routerLink="/Category" >Thể Loại	</a>
+		<a routerLink="/genre" >Thể Loại	</a>
+    <a routerLink="/createStream" >Tạo stream	</a>
 		</div>
-		
+
 		<!-- <div class="search-form">
 			<input matInput type="search" placeholder="Tìm kiếm...">
 			<label class='fa fa-search'></label>
 		</div> -->
-		
+
 	</div>
-	
+
 	<!--icon chưa đăng nhập -->
 	<div class="login">
 		<button mat-button  (click)="open()" *ngIf="!this.auth.user" >Đăng Ký </button>
@@ -39,37 +39,37 @@
 			<div class="w3-dropdown-content w3-bar-block w3-border" >
 			  <a  class="w3-bar-item w3-button" style="display: flex;"><mat-icon>settings</mat-icon>Setting</a>
 			  <a [routerLink]="['']" (click)="this.auth.logout()" class="w3-bar-item w3-button" style="display: flex;"><mat-icon>forward</mat-icon>Signout</a>
-			  
+
 			</div>
 		  </div>
 	</div>
-	
+
 	<!--Phần icon đăng nhập -->
 	<!-- <div class="user">
 		<i  class='fa fa-user-o '></i>
 	</div> -->
-	
+
 	<!--icon chưa đăng nhập-->
 
-	
-</div> 
+
+</div>
 
 
 
 
 
 
-		
 
-		
-		
-			
-			
 
-		
 
-		
-		
+
+
+
+
+
+
+
+
 
 
 
