@@ -7,7 +7,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   FacebookAuthProvider,
-  getAuth,
+  getAuth
 } from '@angular/fire/auth';
 import { Firestore } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
@@ -48,10 +48,13 @@ export class AuthService {
       .post(`${environment.nodejsConfig}createUser`, {
         Id: this.user.uid,
         Name: this.user.displayName,
-      },{responseType:'text'})
-      .subscribe(() => {});
+      }, { responseType: 'text' })
+      .subscribe(() => { });
   }
-  // public async getUserInfo(Id:any){
-  //   return await this.http.
-  // }
+
+  public async getUserInfo(Id: any) {
+     this.http.get(`${environment.nodejsConfig}getUserInfo/${Id}`).subscribe((value:any) => {
+      return value.Name
+    });
+  }
 }

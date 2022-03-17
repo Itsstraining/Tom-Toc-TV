@@ -40,15 +40,17 @@ export class TranglivestreamComponent implements OnInit {
       hls.attachMedia(video);
     }, 3000);
   }
+
   async addChatMessage(){
     if(this.chatForm.valid){
-      await  this.stream.addChat(this.stream.streamInfo.idDoc,this.chatForm.controls['mess'].value);
+      await  this.stream.addChat(this.stream.streamInfo.idDoc,this.auth.user.displayName,this.chatForm.controls['mess'].value);
       this.chatForm.controls['mess'].reset()
+
     }
   }
   async EnterChatMessage(){
     if(this.chatForm.valid){
-      await  this.stream.addChat(this.stream.streamInfo.idDoc,this.chatForm.controls['mess'].value);
+      await  this.stream.addChat(this.stream.streamInfo.idDoc,this.auth.user.displayName,this.chatForm.controls['mess'].value);
       this.chatForm.controls['mess'].reset()
     }
   }

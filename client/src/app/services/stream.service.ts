@@ -63,18 +63,20 @@ export class StreamService {
       data.forEach((doc) => {
         if (doc['idDoc'] == Id) {
           this.streamInfo = doc;
+
           this.streamLink = `${environment.rtmpConnectionString}:8000/live/${doc['StreamKey']}/index.m3u8`;
         }
       });
     });
   }
-  async addChat(Id: any, Mess: any) {
+  async addChat(Id: any,UserName:any, Mess: any) {
     try {
       return await this.http
         .post(`${environment.nodejsConfig}addChat`, {
           data: {
             streamId: Id,
             UserId: this.auth.user.uid,
+            UserName:UserName,
             message: Mess,
           },
         },{responseType:'text'})

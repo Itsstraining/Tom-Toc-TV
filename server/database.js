@@ -45,12 +45,12 @@ class Database {
     } catch (err) {}
   }
 
-  async getUserInfo(body) {
+  async getUserInfo(id) {
     let temp;
     try {
       await firestore
         .collection("UserInfo")
-        .where("UserId", "==", body.userId)
+        .where("UserId", "==", id)
         .get()
         .then((res) => {
           res.forEach((element) => {
@@ -88,22 +88,6 @@ class Database {
   ////STREAM FUNCTION
 
   /// Tạo stream
-<<<<<<< HEAD
-  async createStream(body) {
-    let temp;
-    try {
-     temp = await firestore.collection("Streams").add(body).then((data)=>{
-       return data.id;
-     });
-      let string = temp.id;
-      let checkUser = await firestore.collection("Streams").doc(string).get();
-      let StreamID = checkUser.data().HostId;
-      await firestore.collection("Users").doc(StreamID).update({ "isStreaming": true });
-      return temp;
-    } catch (err) {
-      console.log(err);
-    }
-=======
   async createStream(data) {
     return new Promise(async (resolve, reject) => {
       let temp = await (await firestore.collection("Streams").add(data)).get();
@@ -115,7 +99,6 @@ class Database {
         .update({ isStreaming: true });
       resolve(temp.id);
     });
->>>>>>> c52b4ca1103fa1e9d94ccd842b94fd9262d63dbd
   }
   //Xóa stream
   async endStream(bodydata) {
@@ -138,12 +121,17 @@ class Database {
 
   async addChat(data) {
     try {
+      let length=await firestore.collection("Streams").doc(data.streamId).get().then( (data)=>{
+        return  data.data().Messages.length;
+      })
       await firestore
         .collection("Streams")
         .doc(data.streamId)
         .update({
           Messages: admin.firestore.FieldValue.arrayUnion({
             UserId: data.UserId,
+            UserName:data.UserName,
+            messNum:length,
             mess: data.message,
           }),
         });
@@ -155,16 +143,6 @@ class Database {
 
   async createSubcribe(body) {
     try {
-<<<<<<< HEAD
-      await firestore.collection("UserInfo")
-      .where('UserId', '==', body.userIdStream).get()
-      .then(value => {
-         value.forEach(element => {
-           element.data().Subcriber.forEach( async data=>{
-             if(data!=body.userIdSubcriber){
-                  await firestore.collection("UserInfo").doc(element.id).update({
-                    Subcriber: admin.firestore.FieldValue.arrayUnion(body.userIdSubcriber)})
-=======
       await firestore
         .collection("UserInfo")
         .where("UserId", "==", body.userIdStream)
@@ -184,102 +162,10 @@ class Database {
                 res.send({ message: "theo dõi thành công" });
               } else {
                 res.send({ message: "đã theo dõi" });
->>>>>>> c52b4ca1103fa1e9d94ccd842b94fd9262d63dbd
               }
             });
           });
         });
-<<<<<<< HEAD
-
-        await firestore.collection("UserInfo")
-        .where('UserId', '==', body.userIdSubcriber).get()
-        .then(value => {
-               value.forEach(element => {
-                 element.data().Subcribe.forEach( async data=>{
-                   if(data!=body.userIdStream){
-                        await firestore.collection("UserInfo").doc(element.id).update({
-                          Subcribe: admin.firestore.FieldValue.arrayUnion(body.userIdStream)})
-                    }
-                   })   
-               })
-              });
-
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async deleteSubcribe(body) {
-    try {
-      await firestore.collection("UserInfo")
-        .where('UserId', '==', body.userIdStream).get()
-        .then(value => {
-           value.forEach(element => {
-             element.data().Subcriber.forEach( async data=>{
-               if(data==body.userIdSubcriber){
-                    await firestore.collection("UserInfo").doc(element.id).update({
-                      Subcriber: admin.firestore.FieldValue.arrayRemove(body.userIdSubcriber)})
-                    }
-               })   
-           })
-          });
-      
-          await firestore.collection("UserInfo")
-          .where('UserId', '==', body.userIdSubcriber).get()
-          .then(value => {
-             value.forEach(element => {
-               element.data().Subcribe.forEach( async data=>{
-                 if(data==body.userIdStream){
-                      await firestore.collection("UserInfo").doc(element.id).update({
-                        Subcribe: admin.firestore.FieldValue.arrayRemove(body.userIdStream)})
-                  }
-                 })   
-             })
-            });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async like(body) {
-    try {
-    await firestore.collection("Streams")
-      .where('HostId', '==', body.HostIdStream).get()
-      .then(value => {
-         value.forEach(element => {
-           element.data().DisLikes.forEach(async data=>{
-             if(data==body.userIdDisLike){
-                  await firestore.collection("Streams").doc(element.id).update({
-                    DisLikes: admin.firestore.FieldValue.arrayRemove(body.userIdDisLike)})
-                  await firestore.collection("Streams").doc(element.id).update({
-                    Likes: admin.firestore.FieldValue.arrayUnion(body.userIdDisLike)})
-                  }
-             })   
-         })
-        });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async disLike(body) {
-    try {
-      await firestore.collection("Streams")
-      .where('HostId', '==', body.HostIdStream).get()
-      .then(value => {
-         value.forEach(element => {
-           element.data().Likes.forEach(async data=>{
-             if(data==body.userIdLike){
-                  await firestore.collection("Streams").doc(element.id).update({
-                    Likes: admin.firestore.FieldValue.arrayRemove(body.userIdLike)})
-                  await firestore.collection("Streams").doc(element.id).update({
-                    DisLikes: admin.firestore.FieldValue.arrayUnion(body.userIdLike)})
-                  }
-             })   
-         })
-        });
-=======
->>>>>>> c52b4ca1103fa1e9d94ccd842b94fd9262d63dbd
     } catch (err) {
       console.log(err);
     }
