@@ -1,3 +1,4 @@
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
@@ -10,7 +11,7 @@ import {
 } from '@angular/fire/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
-
+import { Category } from '../models/category.model';
 import { Stream } from '../models/stream.model';
 import { AuthService } from './auth.service';
 
@@ -19,17 +20,22 @@ import { AuthService } from './auth.service';
 })
 export class StreamService {
   public streamInfo: any = new Stream();
-  public streamList!: Array<Stream>;
+  public streamList!: Array<any>;
+  public categoryList: Array<any> = [];
   public streamLink: any;
+  public streamerName!:Array<any>;
+
   constructor(
     public router: Router,
     public fs: Firestore,
     public AcRoute: ActivatedRoute,
     public http: HttpClient,
     public auth: AuthService
-  ) {}
+  ) {
 
-  async createStream(Name: any, Description: any, StreamKey: any, UserId: any) {
+  }
+
+  async createStream(Name: any, Description: any, StreamKey: any, UserId: any,) {
     if (this.auth.user.uid == null) {
       alert('Vui lòng đăng nhập');
     } else {
@@ -45,11 +51,28 @@ export class StreamService {
             StreamKey: StreamKey,
             HostId: UserId,
           },
-        },{responseType:'text'})
+        }, { responseType: 'text' })
         .subscribe((data) => {
           this.router.navigate([`stream/${data}`])
         });
     }
+  }
+  getStreamsByCategory(Id: any) {
+    let docRef = collection(this.fs, 'Streams');
+    collectionData(docRef, { idField: 'idDoc' }).subscribe((data) => {
+      if (Id == null) {
+        this.streamList = data;
+      } else {
+        data.forEach((doc) => {
+          this.streamList=[];
+          if (doc['categoryId'] == Id) {
+
+            this.streamList.push(doc);
+          }
+        })
+      }
+
+    });
   }
   getStreamsData() {
     let docRef = collection(this.fs, 'Streams');
@@ -69,21 +92,30 @@ export class StreamService {
       });
     });
   }
-  async addChat(Id: any,UserName:any, Mess: any) {
+  getCategory() {
+    let docRef = collection(this.fs, 'Categories');
+    collectionData(docRef, { idField: 'idDoc' }).subscribe((data) => {
+      this.categoryList=data;
+    })
+  }
+
+  async addChat(Id: any, UserName: any, Mess: any) {
     try {
       return await this.http
         .post(`${environment.nodejsConfig}addChat`, {
           data: {
             streamId: Id,
             UserId: this.auth.user.uid,
-            UserName:UserName,
+            UserName: UserName,
             message: Mess,
           },
-        },{responseType:'text'})
-        .subscribe(() => {});
+        }, { responseType: 'text' })
+        .subscribe(() => { });
     } catch (err) {
       console.log(err);
       return
     }
   }
+
+
 }

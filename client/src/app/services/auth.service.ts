@@ -7,7 +7,9 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   FacebookAuthProvider,
-  getAuth
+  getAuth,
+
+
 } from '@angular/fire/auth';
 import { Firestore } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
@@ -24,6 +26,7 @@ export class AuthService {
   public user: any;
   constructor(
     public auth: Auth,
+    public other:Auth,
     public http: HttpClient,
     public fs: Firestore
   ) {
