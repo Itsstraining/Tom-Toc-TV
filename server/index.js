@@ -9,6 +9,26 @@ const db = new Database();
 app.use(body.json());
 app.use(cors());
 
+app.get("/category", async function(request, response){
+  try {
+    let result = await db.getCategory();
+    response.send(result);
+  } catch (error) {
+    response.send(error.toString());
+  }
+});
+// api lấy  thông tin cá nhân của người dùng
+app.get('/api/:id', async function (request, response) {
+  let docId = request.params.docId;
+  try{
+      let result = await db.getItemid();
+      response.send(result);
+  }catch (error) {
+      response.send({
+        error: error.toString(),
+      });
+  }
+});
 //API chỉnh sửa thông tin người dùng theo UserID
 app.post("/editUserInfo", async function (req, res) {
   try {
@@ -34,17 +54,6 @@ app.get("/getUserInfo", async function (req, res) {
 
 
 // API tạo người dùng. Không tạo mới nếu người dùng tồn tại trong hệ thống
-<<<<<<< HEAD
-// app.post("/createUser", async (req, res) => {
-//   try {
-//     let body = req.body;
-//     await db.editUserInfo(body);
-//     res.send("cập nhật thông tin thành công");
-//   } catch (error) {
-//     res.send(error.toString());
-//   }
-// });
-=======
 app.post("/createUser", async (req, res) => {
   try {
 
@@ -55,7 +64,6 @@ app.post("/createUser", async (req, res) => {
     res.send(error.toString());
   }
 });
->>>>>>> c52b4ca1103fa1e9d94ccd842b94fd9262d63dbd
 
 // API lấy ra danh sách streamer mà người dùng theo dõi
 // app.get("/getStreamer", async function (req, res) {
@@ -132,40 +140,6 @@ app.post("/createSubcribe", async (req, res) => {
 
 
 // API UnSubcribe
-<<<<<<< HEAD
-app.delete("/deleteSubcribe", async (req, res) => {
-  try {
-    let body = req.body;
-    await db.deleteSubcribe(body);
-    res.send("hủy theo dõi thành công");
-  } catch (error) {
-    res.send(error.toString());
-  }
-});
-
-// API like
-app.put("/like", async (req, res) => {
-  try {
-    let body = req.body;
-    await db.like(body);
-    res.send("like");
-  } catch (error) {
-    res.send(error.toString());
-  }
-});
-
-//API dislike
-app.put("/dislike", async (req, res) => {
-  try {
-    let body = req.body;
-    await db.disLike(body);
-    res.send("dislike");
-  } catch (error) {
-    res.send(error.toString());
-  }
-});
-
-=======
 // app.delete("/deleteSubcribe", async (req, res) => {
 //   try{
 //   let body = req.body;
@@ -253,7 +227,6 @@ app.put("/dislike", async (req, res) => {
 // }catch(error){
 //     res.send(error.toString());}
 // });
->>>>>>> c52b4ca1103fa1e9d94ccd842b94fd9262d63dbd
 
 // API thêm danh mục
 // app.post("/addElementCategorie", async (req, res) => {

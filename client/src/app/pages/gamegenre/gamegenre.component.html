@@ -4,7 +4,7 @@
             <button id="icon">
                 <mat-icon>settings</mat-icon>
             </button>
-            <p style="font-size: 40px;color: #FFFFFF;margin-left: 11.9%;margin-top: -2%;">Kênh trực tiếp</p>
+            <p style="font-size: 40px;color: #FFFFFF;margin-left: 7%;margin-top: -2%;">Kênh trực tiếp</p>
         </div>
         <div id="allbutton">
             <button id="button">Tất cả</button>
@@ -13,24 +13,28 @@
             <button id="button"[routerLink]="['/moba']">Moba</button>
         </div>
     </div>
+
     <div id="fullalltype">
         <div id="alltype">
             <div class="type1">
                 <img src="../../../assets/images/type1.jpg" [routerLink]="['/tranglivestream']">
                 <div id="stream1">
-                    <img style="width: 100%;border-radius: 100%"
+                    <img style="width: 100%;border-radius: 100%;" 
                     src="https://img.nimo.tv/t/201907111562875240667_1629511896446_avatar.png/w120_l0/img.png">
                 </div>
-                <p style="margin-left: 33%;font-size: 20px;margin-top: -27%;color: #FFFFFF;white-space: nowrap;
-                overflow: hidden;text-overflow: ellipsis;">TUITÊNBO</p>
+                <p style="margin-left: 33%;font-size: 20px;margin-top: -26%;color: #FFFFFF;white-space: nowrap;
+                overflow: hidden;text-overflow: ellipsis;" >TUI TÊN BO
+                </p>
                 <p style="margin-left: 33%;font-size: 20px;margin-top: 4%;color: #FFFFFF;white-space: nowrap;
-                overflow: hidden;text-overflow: ellipsis;">Stream nào</p>
+                overflow: hidden;text-overflow: ellipsis;" 
+                *ngFor="let item of this.print.List1[0].categoryList">
+                {{item.Name}}</p>
                 <div id="viewer">
                     <img
                     style="width: 8%;
                     height: 20%;;margin-left: 72%;margin-top: 2%;"
                     src="../../../assets/images/uesr-goup.png">
-                    <h2>4,137</h2>
+                    <h2>4.137</h2>
                 </div>
             </div>
         </div>
