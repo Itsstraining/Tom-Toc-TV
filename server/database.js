@@ -100,11 +100,10 @@ class Database {
   //// category
   async getCategory(){
     let temp=[];
-    (await firestore.collection("Categories").get()
-    ).docs.map((data) => {
-      temp.push(data.data().categoryName);
+    await firestore.collection("Categories").get().then((data)=>{
+      temp.push(data);
     })
-    console.log(temp)
+    
     return temp;
   }
   /// Tạo stream
