@@ -1,7 +1,9 @@
 .container{
     height: 100%;
     width: 100%;
+    margin-top: 5.5%;
     background: black;
+    overflow: hidden;
 }
 .container .sidebar{
     float: left;
@@ -10,13 +12,13 @@
     background: #b90b0b;
 }
  app-sibabar-profile{
-    // float: left;
+    // float: left;s
     height: 100%;
     width: 100%;
     // background: #b90b0b;
 }
 .container .infor{
-    margin: 8% 2% 0 2%;
+    margin: 3.5% 2% 0 2%;
     height: fit-content;
     width: 73%;
     float: right;

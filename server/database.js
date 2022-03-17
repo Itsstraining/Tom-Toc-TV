@@ -70,55 +70,62 @@ class Database {
       let checkUser = false;
       let findUser = await firestore.collection("Users").get();
       findUser.forEach((doc) => {
-        // console.log(doc.data())
         if (doc.id == body.docUser) {
           return (checkUser = true);
         }
       });
-      // console.log(checkUser)
       if (!checkUser) {
         let result = await firestore.collection("Users").add(body.data);
-        // let temp= result.data();
+        return temp= result.data();
       }
     } catch (err) {
       console.log(err);
     }
   }
 
-  ////STREAM FUNCTION
 
-  // api lấy  thông tin cá nhân của người dùng
-  async getItemid() {
-    let temp;
-    (await firestore.collection("UserInfo")
-      .get())
-      .docs.map((data) => {
-        temp = data.data();
-      })
-    return temp;
-  }
-  //// category
-  async getCategory() {
-    let temp = [];
-    await firestore.collection("Categories").get().then((data) => {
-      temp.push(data);
-    })
+  async getStream(body) {
+    try {
+      let listStreamer;
 
-    return temp;
+      let temp;
+      await firestore.collection("UserInfo")
+      .where("UserId", "==", body.userId).get()
+      .then((res) => {
+        res.forEach((element) => {
+          return (temp = element.id);
+        });
+      });
+
+      await firestore.collection("UserInfo").doc(temp).get().then(doc => {
+        listStreamer=doc.data().Subcribe;
+        });
+      return listStreamer;
+    } catch (err) {
+      console.log(err);
+    }
   }
-  /// Tạo stream
-  async createStream(data) {
-    return new Promise(async (resolve, reject) => {
-      let temp = await (await firestore.collection("Streams").add(data)).get();
-      let checkUser = temp.data();
-      let StreamID = checkUser.HostId;
-      await firestore
-        .collection("Users")
-        .doc(StreamID)
-        .update({ isStreaming: true });
-      resolve(temp.id);
-    });
+
+////STREAM FUNCTION
+/// Tạo stream
+  async createStream(body) {
+    try {
+  let findUser = await firestore.collection("Users").get()
+  findUser.forEach(doc => {
+    if(doc.id == body.docUser ){
+      return checkUser=true;
+    }
+  });
+  if(!checkUser){
+  await firestore.collection("Users").add(body.data);
+  
   }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+
   //Xóa stream
   async endStream(bodydata) {
 
@@ -234,30 +241,122 @@ class Database {
 
   async createSubcribe(body) {
     try {
-
-      await firestore
-        .collection("UserInfo")
-        .where("UserId", "==", body.userIdStream)
-        .get()
-        .then((value) => {
-          value.forEach((element) => {
-            element.data().Subcriber.forEach(async (data) => {
-              if (data != body.userIdSubcriber) {
-                await firestore
-                  .collection("UserInfo")
-                  .doc(element.id)
-                  .update({
-                    Subcriber: admin.firestore.FieldValue.arrayUnion(
-                      body.userIdSubcriber
-                    ),
-                  });
-                res.send({ message: "theo dõi thành công" });
-              } else {
-                res.send({ message: "đã theo dõi" });
+      await firestore.collection("UserInfo")
+      .where('UserId', '==', body.userIdStream).get()
+      .then(value => {
+         value.forEach(element => {
+           element.data().Subcriber.forEach( async data=>{
+             if(data!=body.userIdSubcriber){
+                  await firestore.collection("UserInfo").doc(element.id).update({
+                    Subcriber: admin.firestore.FieldValue.arrayUnion(body.userIdSubcriber)})
               }
             });
           });
         });
+
+        await firestore.collection("UserInfo")
+        .where('UserId', '==', body.userIdSubcriber).get()
+        .then(value => {
+               value.forEach(element => {
+                 element.data().Subcribe.forEach( async data=>{
+                   if(data!=body.userIdStream){
+                        await firestore.collection("UserInfo").doc(element.id).update({
+                          Subcribe: admin.firestore.FieldValue.arrayUnion(body.userIdStream)})
+                    }
+                   })   
+               })
+              });
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async deleteSubcribe(body) {
+    try {
+      await firestore.collection("UserInfo")
+        .where('UserId', '==', body.userIdStream).get()
+        .then(value => {
+           value.forEach(element => {
+             element.data().Subcriber.forEach( async data=>{
+               if(data==body.userIdSubcriber){
+                    await firestore.collection("UserInfo").doc(element.id).update({
+                      Subcriber: admin.firestore.FieldValue.arrayRemove(body.userIdSubcriber)})
+                    }
+               })   
+           })
+          });
+      
+          await firestore.collection("UserInfo")
+          .where('UserId', '==', body.userIdSubcriber).get()
+          .then(value => {
+             value.forEach(element => {
+               element.data().Subcribe.forEach( async data=>{
+                 if(data==body.userIdStream){
+                      await firestore.collection("UserInfo").doc(element.id).update({
+                        Subcribe: admin.firestore.FieldValue.arrayRemove(body.userIdStream)})
+                  }
+                 })   
+             })
+            });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async like(body) {
+    try {
+    await firestore.collection("Streams")
+      .where('HostId', '==', body.HostIdStream).get()
+      .then(value => {
+         value.forEach(element => {
+           element.data().DisLikes.forEach(async data=>{
+             if(data==body.userIdDisLike){
+                  await firestore.collection("Streams").doc(element.id).update({
+                    DisLikes: admin.firestore.FieldValue.arrayRemove(body.userIdDisLike)})
+                  await firestore.collection("Streams").doc(element.id).update({
+                    Likes: admin.firestore.FieldValue.arrayUnion(body.userIdDisLike)})
+                  }
+             })   
+         })
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async disLike(body) {
+    try {
+      await firestore.collection("Streams")
+      .where('HostId', '==', body.HostIdStream).get()
+      .then(value => {
+         value.forEach(element => {
+           element.data().Likes.forEach(async data=>{
+             if(data==body.userIdLike){
+                  await firestore.collection("Streams").doc(element.id).update({
+                    Likes: admin.firestore.FieldValue.arrayRemove(body.userIdLike)})
+                  await firestore.collection("Streams").doc(element.id).update({
+                    DisLikes: admin.firestore.FieldValue.arrayUnion(body.userIdLike)})
+                  }
+             })   
+         })
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async addCategorie(body){
+    try {
+      await firestore.collection("Categories").add(body.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async addElementCategorie(body){
+    try {
+      await firestore.collection("Categories").doc(body.docId).update(body.data);
     } catch (err) {
       console.log(err);
     }

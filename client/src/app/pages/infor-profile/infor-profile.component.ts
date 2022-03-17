@@ -10,7 +10,9 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class InforProfileComponent implements OnInit {
 
-  constructor(public dialog:MatDialog,public auth:AuthService) { }
+  constructor(public dialog:MatDialog,public auth:AuthService) { 
+    console.log(this.auth.user);
+  }
 
   ngOnInit(): void {
   }

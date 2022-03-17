@@ -3,20 +3,17 @@
         <div id="image">
             <img  [src]="this.auth.user.photoURL" >
         </div>
-        <p>Elometer</p>
+        <p>{{this.auth.user.displayName}}</p>
     </div>
     <div class="fram">
         <div class="item" >
             <div  [ngStyle]="{'background': this.temp=='/infor-profile' ? 'green' : '#373737'}">
-               
                 <a (click)="navigate('/infor-profile')" > <mat-icon style="margin-right:9%;">person</mat-icon>Thông tin cá nhân </a>
             </div>
             <div  [ngStyle]="{'background': this.temp=='/my-follow' ? 'green' : '#373737'}">
-               
                 <a  (click)="navigate('/my-follow')" > <mat-icon style="margin-right:9%;">person_add</mat-icon>Theo dõi</a>
             </div>
-            <div  [ngStyle]="{'background': this.temp=='/view-history' ? 'green' : '#373737'}">
-                	     
+            <div  [ngStyle]="{'background': this.temp=='/view-history' ? 'green' : '#373737'}">	     
                 <a  (click)="navigate('/view-history')" ><mat-icon style="margin-right:9%;"  >av_timer</mat-icon> Lịch sử xem</a>
             </div> 
         </div>

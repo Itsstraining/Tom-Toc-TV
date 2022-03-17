@@ -56,28 +56,24 @@ app.get("/getUserInfo/:id", async function (req, res) {
 // API tạo người dùng. Không tạo mới nếu người dùng tồn tại trong hệ thống
 app.post("/createUser", async (req, res) => {
   try {
-
     let body = req.body;
-    await db.addNewUser(body);
-    res.send("Tạo người dùng thành công");
+    let result=await db.createStream(body);
+    res.send(result);
   } catch (error) {
     res.send(error.toString());
   }
 });
 
 // API lấy ra danh sách streamer mà người dùng theo dõi
-// app.get("/getStreamer", async function (req, res) {
-//   try{
-//   let body = req.body;
-//   let listStreamer;
-//   let streamerFollow = await firestore.collection("UserInfo").doc(body.docID).get().then(doc => {
-//     listStreamer=doc.data().Subcribe;
-//     });
-//   res.send(listStreamer);
-//   }catch(err){
-//     res.send(err.toString());
-//   }
-// });
+app.get("/getStreamer", async function (req, res) {
+  try{
+  let body = req.body;
+  let result=await db.getStream(body);
+  res.send(result);
+  }catch(err){
+    res.send(err.toString());
+  }
+});
 
 // API tạo stream. Sau khi tạo cập nhật biến IsStreaming=true của người dùng có Id trùng với hostID
 app.post("/createStream", async (req, res) => {
@@ -92,6 +88,7 @@ app.post("/createStream", async (req, res) => {
   }
 });
 
+// API tắt stream. Xóa document , cập nhật biên IsStreaming=false của người dùng có Id trùng với hostID
 app.delete("/endStream", async (req, res) => {
   try {
     let body = req.body;
@@ -113,20 +110,6 @@ app.post("/addChat", async (req, res) => {
   }
 })
 
-// API tắt stream. Xóa document , cập nhật biên IsStreaming=false của người dùng có Id trùng với hostID
-// app.delete("/deleteStream", async (req, res) => {
-//   try{
-//   let body = req.body;
-//   let checkUser= await firestore.collection("Streams").doc(body.docId).get();
-//   let StreamID=checkUser.data().HostID;
-//   await firestore.collection("Streams").doc(body.docId).delete();
-//   let findUser = await firestore.collection("Users").doc(StreamID)
-//   .update({"isStreaming":false})
-//   // console.log(checkUser)
-//   res.send("xóa stream thành công");
-// }catch(error){
-//     res.send(error.toString());}
-// });
 
 // API Subcribe.
 app.post("/createSubcribe", async (req, res) => {
@@ -169,41 +152,15 @@ app.post("/removeViewer", async (req, res) => {
   }
 })
 // API UnSubcribe
-// app.delete("/deleteSubcribe", async (req, res) => {
-//   try{
-//   let body = req.body;
-//   await firestore.collection("UserInfo")
-//   .where('UserId', '==', body.userIdStream).get()
-//   .then(value => {
-//      value.forEach(element => {
-//        element.data().Subcriber.forEach( async data=>{
-//          if(data==body.userIdSubcriber){
-//               await firestore.collection("UserInfo").doc(element.id).update({
-//                 Subcriber: admin.firestore.FieldValue.arrayRemove(body.userIdSubcriber)})
-//                 res.send({message:"hủy theo dõi thành công"});
-//               }else{
-//                   res.send({message:"chưa theo dõi"});
-//               }
-//          })
-//      })
-//     });
-
-//     await firestore.collection("UserInfo")
-//     .where('UserId', '==', body.userIdSubcriber).get()
-//     .then(value => {
-//        value.forEach(element => {
-//          element.data().Subcribe.forEach( async data=>{
-//            if(data==body.userIdStream){
-//                 await firestore.collection("UserInfo").doc(element.id).update({
-//                   Subcribe: admin.firestore.FieldValue.arrayRemove(body.userIdStream)})
-//             }
-//            })
-//        })
-//       });
-
-// }catch(error){
-//     res.send(error.toString());}
-// });
+app.delete("/deleteSubcribe", async (req, res) => {
+  try {
+    let body = req.body;
+    await db.deleteSubcribe(body);
+    res.send("hủy theo dõi thành công");
+  } catch (error) {
+    res.send(error.toString());
+  }
+});
 
 // API like
 app.put("/like", async (req, res) => {
@@ -230,17 +187,27 @@ app.put("/dislike", async (req, res) => {
 });
 
 // API thêm danh mục
-// app.post("/addElementCategorie", async (req, res) => {
-//   try {
-//     let body = req.body
-//     await firestore.collection("Categories").doc(body.docId).update(body.data);
-//     res.send({ message: "thêm thành công" });
-//   } catch (error) {
-//     res.send(error.toString());
-//   }
-// });
+app.post("/addCategorie", async (req, res) => {
+  try {
+    let body = req.body
+    await db.addCategorie(body);
+    res.send("thêm danh mục mới");
+  } catch (error) {
+    res.send(error.toString());
+  }
+});
 
 //API thêm thành phần trong danh mục
+app.post("/addElementCategorie", async (req, res) => {
+  try {
+    let body = req.body
+    await db.addElementCategorie(body)
+    res.send("thêm thành công");
+  } catch (error) {
+    res.send(error.toString());
+  }
+});
+
 app.listen(3000, "0.0.0.0", () => {
   console.log("Server is running on http://127.0.0.1:3000/");
 });
