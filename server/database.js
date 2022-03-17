@@ -70,53 +70,62 @@ class Database {
       let checkUser = false;
       let findUser = await firestore.collection("Users").get();
       findUser.forEach((doc) => {
-        // console.log(doc.data())
         if (doc.id == body.docUser) {
           return (checkUser = true);
         }
       });
-      // console.log(checkUser)
       if (!checkUser) {
         let result = await firestore.collection("Users").add(body.data);
-        // let temp= result.data();
+        return temp= result.data();
       }
     } catch (err) {
       console.log(err);
     }
   }
 
-  ////STREAM FUNCTION
 
-  /// Tạo stream
-<<<<<<< HEAD
-  async createStream(body) {
-    let temp;
+  async getStream(body) {
     try {
-     temp = await firestore.collection("Streams").add(body).then((data)=>{
-       return data.id;
-     });
-      let string = temp.id;
-      let checkUser = await firestore.collection("Streams").doc(string).get();
-      let StreamID = checkUser.data().HostId;
-      await firestore.collection("Users").doc(StreamID).update({ "isStreaming": true });
-      return temp;
+      let listStreamer;
+
+      let temp;
+      await firestore.collection("UserInfo")
+      .where("UserId", "==", body.userId).get()
+      .then((res) => {
+        res.forEach((element) => {
+          return (temp = element.id);
+        });
+      });
+
+      await firestore.collection("UserInfo").doc(temp).get().then(doc => {
+        listStreamer=doc.data().Subcribe;
+        });
+      return listStreamer;
     } catch (err) {
       console.log(err);
     }
-=======
-  async createStream(data) {
-    return new Promise(async (resolve, reject) => {
-      let temp = await (await firestore.collection("Streams").add(data)).get();
-      let checkUser = temp.data();
-      let StreamID = checkUser.HostId;
-      await firestore
-        .collection("Users")
-        .doc(StreamID)
-        .update({ isStreaming: true });
-      resolve(temp.id);
-    });
->>>>>>> c52b4ca1103fa1e9d94ccd842b94fd9262d63dbd
   }
+
+////STREAM FUNCTION
+/// Tạo stream
+  async createStream(body) {
+    try {
+  let findUser = await firestore.collection("Users").get()
+  findUser.forEach(doc => {
+    if(doc.id == body.docUser ){
+      return checkUser=true;
+    }
+  });
+  if(!checkUser){
+  await firestore.collection("Users").add(body.data);
+  
+  }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+
   //Xóa stream
   async endStream(bodydata) {
     try {
@@ -155,7 +164,6 @@ class Database {
 
   async createSubcribe(body) {
     try {
-<<<<<<< HEAD
       await firestore.collection("UserInfo")
       .where('UserId', '==', body.userIdStream).get()
       .then(value => {
@@ -164,32 +172,10 @@ class Database {
              if(data!=body.userIdSubcriber){
                   await firestore.collection("UserInfo").doc(element.id).update({
                     Subcriber: admin.firestore.FieldValue.arrayUnion(body.userIdSubcriber)})
-=======
-      await firestore
-        .collection("UserInfo")
-        .where("UserId", "==", body.userIdStream)
-        .get()
-        .then((value) => {
-          value.forEach((element) => {
-            element.data().Subcriber.forEach(async (data) => {
-              if (data != body.userIdSubcriber) {
-                await firestore
-                  .collection("UserInfo")
-                  .doc(element.id)
-                  .update({
-                    Subcriber: admin.firestore.FieldValue.arrayUnion(
-                      body.userIdSubcriber
-                    ),
-                  });
-                res.send({ message: "theo dõi thành công" });
-              } else {
-                res.send({ message: "đã theo dõi" });
->>>>>>> c52b4ca1103fa1e9d94ccd842b94fd9262d63dbd
               }
             });
           });
         });
-<<<<<<< HEAD
 
         await firestore.collection("UserInfo")
         .where('UserId', '==', body.userIdSubcriber).get()
@@ -278,8 +264,22 @@ class Database {
              })   
          })
         });
-=======
->>>>>>> c52b4ca1103fa1e9d94ccd842b94fd9262d63dbd
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async addCategorie(body){
+    try {
+      await firestore.collection("Categories").add(body.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async addElementCategorie(body){
+    try {
+      await firestore.collection("Categories").doc(body.docId).update(body.data);
     } catch (err) {
       console.log(err);
     }
