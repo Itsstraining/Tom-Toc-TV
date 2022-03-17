@@ -122,6 +122,8 @@
 
 .circle {
 	clip-path: circle(50%);
+	display: flex;
+	justify-items: center;
 	width: fit-content;
 	height: fit-content;
 	margin-top: 8px;

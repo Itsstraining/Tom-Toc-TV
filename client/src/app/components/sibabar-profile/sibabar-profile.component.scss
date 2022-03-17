@@ -1,7 +1,8 @@
 .container{
-    height: 89.1%;
+    height: 100%;
     width: 100%;
     background: #373737;
+    overflow: hidden;
 }
 .container .avata{
     height: 30%;
@@ -13,7 +14,7 @@
     align-items: center;
     flex-direction: column;
     border-bottom: 0.2rem solid rgb(228, 227, 227);
-    margin-top: 24%;
+    // margin-top: 24%;
 }
 #image {
     height: 50%;
